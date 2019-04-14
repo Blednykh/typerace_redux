@@ -2,6 +2,7 @@
     width: 40px;
     height: 40px;
 }
+
 #gameWindow {
     background: rgba(214, 214, 214, 0.98);
     margin-top: 5%;
@@ -15,6 +16,7 @@
     padding: 20px;
     position: relative;
 }
+
 #text {
     margin: 10px;
 }
@@ -22,26 +24,33 @@
 #text span {
     font-size: large;
 }
+
 #inputElem {
     margin-bottom: 30px;
     width: 50%;
     font-size: large;
     margin-left: 10px;
 }
+
 #typedTextElem {
-     background: green;
- }
+    background: green;
+}
+
 #mistakeElem {
     background: red;
 }
+
 #textElem {
 }
+
 #timerElem {
     z-index: 1;
     position: absolute;
-    right: 28%;
-    bottom: 23%;
+    text-align: center;
+    width: 100%;
+    margin-top: 11px;
 }
+
 #timerContent {
     position: relative;
     width: 40px;
@@ -52,15 +61,18 @@
     right: 3%;
     bottom: 5%;
 }
+
 #cpsElem {
     position: absolute;
     bottom: 10%;
     left: 3%;
 }
+
 #live {
     width: 40px;
     height: 40px;
 }
+
 #gameLink {
     position: absolute;
     text-align: center;
@@ -68,7 +80,8 @@
     right: 3%;
     width: 10%;
 }
-#buttonBack{
+
+#buttonBack {
     width: 100%;
     background: #4ac5ff;
     border-radius: 25px;
@@ -79,6 +92,7 @@
     font-size: 14px;
     border: none;
 }
-#buttonBack:hover{
+
+#buttonBack:hover {
     transform: scale(0.96);
 }
