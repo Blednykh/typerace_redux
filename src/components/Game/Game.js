@@ -1,15 +1,14 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import './Game.css';
 import stopwatch from './stopwatch.png';
 import hurt from './hurt.png';
 import {Link} from "react-router-dom";
 
 
-
-class Game extends Component{
-    constructor(props){
+class Game extends Component {
+    constructor(props) {
         super(props);
-        this.state ={
+        this.state = {
             userName: '',
             text: '',
             typedText: '',
@@ -23,6 +22,7 @@ class Game extends Component{
         this.componentDidMount = this.componentDidMount.bind(this);
         this.setRandomText = this.setRandomText.bind(this);
     }
+
     componentDidMount() {
         const inputElem = document.getElementById('inputElem');
         const timerElem = document.getElementById('timerElem');
@@ -39,7 +39,7 @@ class Game extends Component{
         inputElem.value = '';
         let time = 90;
         timerElem.innerText = time;
-        const timerId = setInterval(()=> {
+        const timerId = setInterval(() => {
             time--;
             timerElem.innerText = time;
             timerElem.style.color = (time <= 10) ? 'red' : 'black';
@@ -52,43 +52,59 @@ class Game extends Component{
 
             }
             if (this.state.lives === 0) {
-                clearTimeout(timerId);
-                if (window.confirm('Слишком много ошибок! Попробовать ещё раз?')) { this.componentDidMount(); }
+                clearInterval(timerId);
+                if (window.confirm('Слишком много ошибок! Попробовать ещё раз?')) {
+                    this.componentDidMount();
+                }
             }
             if (this.state.wordId === this.state.words.length) {
-                clearTimeout(timerId);
-                let data = JSON.stringify({ userName: this.state.userName, userSpeed: this.state.userSpeed });
+                clearInterval(timerId);
+                let data = JSON.stringify({userName: this.state.userName, userSpeed: this.state.userSpeed});
 
                 let request = new XMLHttpRequest();
 
                 request.open('POST', 'http://localhost:3200/', true);
                 request.setRequestHeader('Content-Type', 'application/json');
-                request.addEventListener('load', function() {
+                request.addEventListener('load', function () {
                     console.log(request.response);
                 });
                 request.send(data);
+
                 if (window.confirm(`Успешно!\n
        Ваша скорость: ${this.state.userSpeed} символов в секунду \n
        Количество слов в тексте: ${this.state.words.length}\n
        Количество жизней: ${this.state.lives}\n
-       Попробовать улучшить результат?`)) {this.componentDidMount(); }
+       Попробовать улучшить результат?`)) {
+                    this.componentDidMount();
+                }
+            }
+
+            if(time===0){
+                clearInterval(timerId);
+                if (window.confirm(`Время вышло!\n
+    Скорее всего из-за того, что ваша скорость всего: ${this.state.userSpeed} символов в секунду \n
+    Попробовать ещё раз?`)) {
+                    this.componentDidMount();
+                }
             }
         }, 1000);
 
-        setTimeout(() =>{
+        /*const timer= setTimeout(() => {
             console.log(this.state.userName);
             clearInterval(timerId);
             timerElem.innerText = '0';
 
             if (window.confirm(`Время вышло!\n
     Скорее всего из-за того, что ваша скорость всего: ${this.state.userSpeed} символов в секунду \n
-    Попробовать ещё раз?`)) { this.componentDidMount(); }
-        }, 90000);
+    Попробовать ещё раз?`)) {
+                this.componentDidMount();
+            }
+        }, 90000);*/
     };
 
-    setLiveBar(){
-        let liveBarList=[];
-        for(let i=0;i<this.state.lives;i++)
+    setLiveBar() {
+        let liveBarList = [];
+        for (let i = 0; i < this.state.lives; i++)
             liveBarList.push(<img id="live" src={hurt}/>);
         return liveBarList;
     }
@@ -101,17 +117,17 @@ class Game extends Component{
 
         fetch('https://fish-text.ru/get?' + params)
             .then(response => response.json())
-            .then(json => this.setState({text : json.text, words: json.text.split(' ')}));
+            .then(json => this.setState({text: json.text, words: json.text.split(' ')}));
     }
 
     handleChange = (event) => {
         const inputElem = document.getElementById('inputElem');
-        let {words,wordId} = this.state;
-        if(event.target.value[event.target.value.length-1]=== ' ' && event.target.value.substring(0, event.target.value.length - 1) === words[wordId]){
+        let {words, wordId} = this.state;
+        if (event.target.value[event.target.value.length - 1] === ' ' && event.target.value.substring(0, event.target.value.length - 1) === words[wordId]) {
             wordId++;
             inputElem.value = '';
         }
-        if(wordId === this.state.words.length){
+        if (wordId === this.state.words.length) {
             this.setState({wordId});
             return;
         }
@@ -134,19 +150,24 @@ class Game extends Component{
                 typedText += item;
             } else {
                 error = true;
-                if (event.target.value[i] === undefined) { text += item; } else { mistakeText += item; }
+                if (event.target.value[i] === undefined) {
+                    text += item;
+                } else {
+                    mistakeText += item;
+                }
             }
         });
 
-        if (mistakeText === '') { inputElem.style.background = 'white';}
-        else {
+        if (mistakeText === '') {
+            inputElem.style.background = 'white';
+        } else {
             inputElem.style.background = 'red';
             /*let elem = document.getElementById('liveImg' + state.lives);
                document.getElementById('liveBar').removeChild(elem); state.lives--;*/
         }
 
-        if(mistakeText.length > this.state.mistakeText.length){
-            this.setState({lives: this.state.lives-1});
+        if (mistakeText.length > this.state.mistakeText.length) {
+            this.setState({lives: this.state.lives - 1});
         }
 
         this.setState({
@@ -158,30 +179,34 @@ class Game extends Component{
 
 
     };
-render(){
-    return(
-        <div id ="gameWindow">
-            <div id = "liveBar">
-                {this.setLiveBar().map((element) =>
-                    element
-                )}
-            </div>
-            <div id="text">
-                <span id="typedTextElem">{this.state.typedText}</span><span id="mistakeElem">{this.state.mistakeText}</span><span id="textElem">{this.state.text}</span>
-            </div>
-            <input type="text" id="inputElem" onChange={this.handleChange}/>
-            <div id = "timerBox">
-                <div id = "timerContent">
-                    <span id="timerElem">90</span>
-                    <img id="stopwatch" src={stopwatch}/>
-                </div>
-            </div>
-            <span id="cpsElem"> Ваша скорость: {this.state.userSpeed} символов в секунду!</span>
-            <Link id = "gameLink" to="/"><button id="buttonBack">На главную</button></Link>
-        </div>
-    );
 
-}
+    render() {
+        return (
+            <div id="gameWindow">
+                <div id="liveBar">
+                    {this.setLiveBar().map((element) =>
+                        element
+                    )}
+                </div>
+                <div id="text">
+                    <span id="typedTextElem">{this.state.typedText}</span><span
+                    id="mistakeElem">{this.state.mistakeText}</span><span id="textElem">{this.state.text}</span>
+                </div>
+                <input type="text" id="inputElem" onChange={this.handleChange}/>
+                <div id="timerBox">
+                    <div id="timerContent">
+                        <span id="timerElem">90</span>
+                        <img id="stopwatch" src={stopwatch}/>
+                    </div>
+                </div>
+                <span id="cpsElem"> Ваша скорость: {this.state.userSpeed} символов в секунду!</span>
+                <Link id="gameLink" to="/">
+                    <button id="buttonBack">На главную</button>
+                </Link>
+            </div>
+        );
+
+    }
 
 }
 
